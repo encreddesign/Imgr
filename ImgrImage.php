@@ -1,42 +1,42 @@
 <?php
 
-/*
-* @class - ImgrImage
-*/
-
-public class ImgrImage {
-
   /*
-  * @var src
+  * @class - ImgrImage
   */
-  private $_src;
 
-  /*
-  * @var alt
-  */
-  private $_alt;
+  class ImgrImage {
 
-  public function __construct ($src, $alt) {
+    /*
+    * @var src
+    */
+    private $_src;
 
-    $this->_src = $src;
-    $this->_alt = $alt;
+    /*
+    * @var alt
+    */
+    private $_alt;
+
+    public function __construct ($src, $alt) {
+
+      $this->_src = $src;
+      $this->_alt = $alt;
+
+    }
+
+    /*
+    * @function: getSrc
+    */
+    public function getSrc () {
+      return $this->_src;
+    }
+
+    /*
+    * @function: getAlt
+    */
+    public function getAlt () {
+      return $this->_alt;
+    }
 
   }
-
-  /*
-  * @function: getSrc
-  */
-  public function getSrc () {
-    return $this->_src;
-  }
-
-  /*
-  * @function: getAlt
-  */
-  public function getAlt () {
-    return $this->_alt;
-  }
-
-}
 
 ?>
