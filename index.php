@@ -3,6 +3,6 @@
   require_once('Imgr.php');
   require_once('ImgrCallback.php');
 
-  Imgr::forge('http://jwlees.web.prop.cm/duttonschester/gallery/', new ImgrCallback(), 'zRS--slide')->build();
+  Imgr::forge('', new ImgrCallback(), 'wp-image-124', true)->build();
 
 ?>

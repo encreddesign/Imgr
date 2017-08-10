@@ -60,7 +60,7 @@
     */
     private $_callback;
 
-    private function __construct ($url, ImgrInterface $callback, $class = '', $background = '') {
+    private function __construct ($url, ImgrInterface $callback, $class = '', $background = false) {
 
       $this->_url = $url;
       $this->_headers = [
@@ -97,7 +97,7 @@
           throw new Exception('Server responded with '.$this->_status.' status');
         }
 
-        $this->build_regex();
+        $this->build_document();
 
       } catch (Exception $ex) {
         $this->_object->message = $ex->getMessage();
@@ -108,25 +108,61 @@
     }
 
     /*
-    * @function: build_regex
+    * @function: build_document
     */
-    private function build_regex () {
+    private function build_document () {
 
-      $imgs = [];
-      $regex = '/\<img(.*?)>/i';
+      $parser = new DOMDocument();
+      $loaded = @$parser->loadHTML($this->_response);
 
-      preg_match_all($regex, $this->_response, $found);
-      if(!empty($found) && isset($found[1])) {
+      if(!$loaded) {
+        throw new Exception('HTML Parsing failed');
+      }
 
-        foreach($found[1] as $result) {
+      $query = new DOMXpath($parser);
 
-          preg_match('/src="(.*?)"/i', $result, $src);
+      $this->_object->images = $this->get_images($query);
 
-        }
+    }
+
+    /*
+    * @function: get_images
+    */
+    protected function get_images (DOMXpath $query) {
+
+      $return = [];
+      $resultNodes = [];
+
+      $queryNodes = null;
+      $queryString = null;
+
+      if($this->_class != '') {
+        $queryString = "img[contains(@class, '".$this->_class."')]";
+      } else {
+        $queryString = "img";
+      }
+
+      $resultNodes['img'] = $query->query("//".$queryString."");
+
+      if($this->_background) {
+        $queryString = "[contains(@style, 'background-image:')]";
+      }
+
+      $resultNodes['background'] = $query->query("//*".$queryString."");
+
+      if(!is_null($resultNodes['img'])) {
+
+        foreach($resultNodes['img'] as $element) {}
 
       }
 
-      print_r($imgs);
+      if(!is_null($resultNodes['background'])) {
+
+        foreach($resultNodes['background'] as $element) {}
+
+      }
+
+      return $return;
 
     }
 
@@ -171,8 +207,8 @@
     * @function: forge
     * @declaration: protected
     */
-    public static function forge ($url, $class = '', $background = '') {
-      return new static($url, $class, $background);
+    public static function forge ($url, ImgrInterface $callback, $class = '', $background = false) {
+      return new static($url, $callback, $class, $background);
     }
 
   }
