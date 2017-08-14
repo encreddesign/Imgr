@@ -3,6 +3,10 @@
   require_once('Imgr.php');
   require_once('ImgrCallback.php');
 
-  Imgr::forge('', new ImgrCallback(), 'wp-image-124', true)->build();
+  // if callback exists, callbck is called and passed with ImgrImage object
+  Imgr::forge('http://example.domain.com/page/', new ImgrCallback(), 'gallery__image', true)->build();
+
+  // return results as a plain object
+  Imgr::forge('http://example.domain.com/page/', null, 'gallery__image', true)->build()->getImages();
 
 ?>

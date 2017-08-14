@@ -60,7 +60,7 @@
     */
     private $_callback;
 
-    private function __construct ($url, ImgrInterface $callback, $class = '', $background = false) {
+    private function __construct ($url, ImgrInterface $callback = null, $class = '', $background = false) {
 
       $this->_url = $url;
       $this->_headers = [
@@ -100,7 +100,15 @@
         $this->build_document();
 
       } catch (Exception $ex) {
-        $this->_object->message = $ex->getMessage();
+
+        $error = $ex->getMessage();
+
+        if($this->_callback) {
+          $this->_callback->onError($error);
+        }
+        
+        $this->_object->message = $error;
+
       }
 
       return $this;
@@ -109,6 +117,7 @@
 
     /*
     * @function: build_document
+    * @declaration: private
     */
     private function build_document () {
 
@@ -127,6 +136,7 @@
 
     /*
     * @function: get_images
+    * @declaration: protected
     */
     protected function get_images (DOMXpath $query) {
 
@@ -152,17 +162,55 @@
 
       if(!is_null($resultNodes['img'])) {
 
-        foreach($resultNodes['img'] as $element) {}
+        foreach($resultNodes['img'] as $element) {
+
+          $url = $element->getAttribute('src');
+          $return[] = $url;
+
+          if($this->_callback) {
+            $this->_callback->onImages(new ImgrImage($url, $element->getAttribute('alt')));
+          }
+
+        }
 
       }
 
       if(!is_null($resultNodes['background'])) {
 
-        foreach($resultNodes['background'] as $element) {}
+        foreach($resultNodes['background'] as $element) {
+
+          $url = $this->get_background_image($element);
+          $return[] = $url;
+
+          if($this->_callback) {
+            $this->_callback->onImages(new ImgrImage($url, null));
+          }
+
+        }
 
       }
 
       return $return;
+
+    }
+
+    /*
+    * @function: find_background_image
+    * @declaration: protected
+    */
+    protected function get_background_image (DOMElement $element) {
+
+      $styleTag = $element->getAttribute('style');
+
+      if(!strpos($styleTag, 'url(')) {
+        throw new Exception('Element does not have background image');
+      }
+
+      return preg_replace('/(\(|\)|url)/i', '', substr(
+        $styleTag,
+        strpos($styleTag, 'url('),
+        strlen($styleTag)
+      ));
 
     }
 
@@ -203,11 +251,19 @@
     }
 
     /*
+    * @function: getImages
+    * @declaration: public
+    */
+    public function getImages () {
+      return $this->_object;
+    }
+
+    /*
     * @importance: Main
     * @function: forge
     * @declaration: protected
     */
-    public static function forge ($url, ImgrInterface $callback, $class = '', $background = false) {
+    public static function forge ($url, ImgrInterface $callback = null, $class = '', $background = false) {
       return new static($url, $callback, $class, $background);
     }
 
