@@ -9,10 +9,10 @@
   interface ImgrInterface {
 
     /*
-    * @function: onImages
-    * @params: ImgrImageObject $image
+    * @function: onImage
+    * @params: ImgrImage $image
     */
-    public function onImages (ImgrImage $image);
+    public function onImage (ImgrImage $image);
 
     /*
     * @function: onError

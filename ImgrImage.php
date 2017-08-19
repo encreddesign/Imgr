@@ -37,6 +37,28 @@
       return $this->_alt;
     }
 
+    /*
+    * @function: getSize
+    */
+    public function getSize () {
+
+      $object = new stdClass();
+      $image = getimagesize($this->_src);
+
+      if(!$image) {
+        return null;
+      }
+
+      list($width, $height, $type) = $image;
+
+      $object->width = $width;
+      $object->height = $height;
+      $object->type = $type;
+
+      return $object;
+
+    }
+
   }
 
 ?>

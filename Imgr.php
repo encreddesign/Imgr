@@ -106,7 +106,7 @@
         if($this->_callback) {
           $this->_callback->onError($error);
         }
-        
+
         $this->_object->message = $error;
 
       }
@@ -147,12 +147,12 @@
       $queryString = null;
 
       if($this->_class != '') {
-        $queryString = "img[contains(@class, '".$this->_class."')]";
+        $queryString = $this->_tag."[contains(@class, '".$this->_class."')]";
       } else {
-        $queryString = "img";
+        $queryString = $this->_tag;
       }
 
-      $resultNodes['img'] = $query->query("//".$queryString."");
+      $resultNodes[$this->_tag] = $query->query("//".$queryString."");
 
       if($this->_background) {
         $queryString = "[contains(@style, 'background-image:')]";
@@ -160,15 +160,15 @@
 
       $resultNodes['background'] = $query->query("//*".$queryString."");
 
-      if(!is_null($resultNodes['img'])) {
+      if(!is_null($resultNodes[$this->_tag])) {
 
-        foreach($resultNodes['img'] as $element) {
+        foreach($resultNodes[$this->_tag] as $element) {
 
           $url = $element->getAttribute('src');
           $return[] = $url;
 
           if($this->_callback) {
-            $this->_callback->onImages(new ImgrImage($url, $element->getAttribute('alt')));
+            $this->_callback->onImage(new ImgrImage($url, $element->getAttribute('alt')));
           }
 
         }
@@ -183,7 +183,7 @@
           $return[] = $url;
 
           if($this->_callback) {
-            $this->_callback->onImages(new ImgrImage($url, null));
+            $this->_callback->onImage(new ImgrImage($url, null));
           }
 
         }
