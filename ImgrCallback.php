@@ -6,6 +6,14 @@
 
   class ImgrCallback implements ImgrInterface {
 
+    private $_restClass;
+    private $_images;
+
+    public function __construct (Rest_Api $restClass) {
+      $this->_images = [];
+      $this->_restClass = $restClass;
+    }
+
     /*
     * @function: onImage
     */
@@ -17,7 +25,27 @@
       $width = ($image->getSize() ? $image->getSize()->width : 0);
       $height = ($image->getSize() ? $image->getSize()->height : 0);
 
-      echo sprintf('<img src="%s" alt="%s" width="%s" height="%s"/>', $src, $alt, $width, $height);
+      // add image to array
+      $object = new stdClass();
+      $object->src = $src;
+      $object->alt = $alt;
+      $object->width = $width;
+      $object->height = $height;
+
+      $this->_images[] = $object;
+
+    }
+
+    /*
+    * @function: onComplete
+    */
+    public function onComplete () {
+
+      if(!empty($this->_images)) {
+        $this->_restClass->echo_response(json_encode($this->_images), 200);
+      } else {
+        $this->_restClass->echo_response('No Images found', 204);
+      }
 
     }
 
@@ -25,7 +53,7 @@
     * @function: onError
     */
     public function onError ($failed) {
-      echo sprintf('<p><b>Error Occurred:</b>%s</p>', $failed);
+      $this->_restClass->echo_response($failed, 500);
     }
 
   }

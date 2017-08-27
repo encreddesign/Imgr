@@ -20,6 +20,11 @@
     */
     public function onError ($failed);
 
+    /*
+    * @function: onComplete
+    */
+    public function onComplete ();
+
   }
 
 ?>

@@ -1,12 +1,22 @@
-<?php
+<?php // index html ?>
 
-  require_once('Imgr.php');
-  require_once('ImgrCallback.php');
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Imgr Ajax</title>
+  </head>
+  <body>
 
-  // if callback exists, callbck is called and passed with ImgrImage object
-  Imgr::forge('http://example.domain.com/page/', new ImgrCallback(), 'gallery__image', true)->build();
+    <form class="js-submit" action="" method="post">
+      <p>Submit a url to get images</p>
+      <input type="text" name="url" value="">
+      <input type="submit" name="" value="Submit">
+      <p class="js-response"></p>
+      <div class="js-container"></div>
+    </form>
 
-  // return results as a plain object with array of images
-  //$images = Imgr::forge('http://example.domain.com/page/', null, 'gallery__image', true)->build()->getImages();
+    <script src="js/ajax.js"></script>
 
-?>
+  </body>
+</html>

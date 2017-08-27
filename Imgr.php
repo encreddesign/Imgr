@@ -132,6 +132,10 @@
 
       $this->_object->images = $this->get_images($query);
 
+      if(!empty($this->_object->images)) {
+        if($this->_callback) $this->_callback->onComplete();
+      }
+
     }
 
     /*
