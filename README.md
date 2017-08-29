@@ -46,7 +46,7 @@ The build function makes the call to the page and extracts the images
 ### getImages
 After calling the build function, you will want to render the data which you do using the getImages function
 ```PHP
-$images = Imgr::forge('https://example.com/blog/article-1', null, 'article__image', true)->build();
+$images = Imgr::forge('https://example.com/blog/article-1', null, 'article__image', true)->build()->getImages();
 ```
 This returns an object that contains an array of images, notice also the passing of the article__image class and scraping background images aswell
 
